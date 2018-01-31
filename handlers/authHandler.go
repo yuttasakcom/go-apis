@@ -2,15 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 )
-
-func init() {
-	fmt.Println("AuthHandler")
-}
 
 // AuthHandler handler
 type AuthHandler struct{}
