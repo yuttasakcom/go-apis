@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User struct
@@ -57,8 +59,18 @@ func (UsersHandler) Create() func(w http.ResponseWriter, r *http.Request) {
 
 		var user User
 		_ = json.NewDecoder(r.Body).Decode(&user)
+
 		user.ID = strconv.Itoa(rand.Intn(10000000))
+
+		hpwd, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+		if err != nil {
+			return
+		}
+
+		user.Password = string(hpwd)
 		user.CreatedAt = time.Now()
+		fmt.Println(user)
 		users = append(users, user)
 
 		json.NewEncoder(w).Encode(users)
