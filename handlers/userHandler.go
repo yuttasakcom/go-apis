@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -42,6 +44,21 @@ func (UsersHandler) GetByID() func(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+
+		json.NewEncoder(w).Encode(users)
+	}
+}
+
+// Create handler
+func (UsersHandler) Create() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf8")
+
+		var user User
+		_ = json.NewDecoder(r.Body).Decode(&user)
+		user.ID = strconv.Itoa(rand.Intn(10000000))
+		user.CreatedAt = time.Now()
+		users = append(users, user)
 
 		json.NewEncoder(w).Encode(users)
 	}

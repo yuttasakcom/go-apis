@@ -14,6 +14,7 @@ func Router() http.Handler {
 	users := handlers.UsersHandler{}
 	r.HandleFunc("/users", users.All()).Methods("GET")
 	r.HandleFunc("/users/{id}", users.GetByID()).Methods("GET")
+	r.HandleFunc("/users", users.Create()).Methods("POST")
 
 	return r
 }
