@@ -3,6 +3,8 @@ package routes
 import (
 	"net/http"
 
+	"github.com/yuttasakcom/go-apis/middleware"
+
 	"github.com/gorilla/mux"
 	"github.com/yuttasakcom/go-apis/handlers"
 )
@@ -15,7 +17,8 @@ func Router() http.Handler {
 	r.HandleFunc("/login", auth.Login()).Methods("POST")
 
 	users := handlers.UsersHandler{}
-	r.HandleFunc("/users", users.All()).Methods("GET")
+	r.Handle("/users", middleware.LoggingMiddleware(http.HandlerFunc(users.All()))).Methods("GET")
+	// r.HandleFunc("/users", users.All()).Methods("GET")
 	r.HandleFunc("/users/{id}", users.GetByID()).Methods("GET")
 	r.HandleFunc("/users", users.Create()).Methods("POST")
 	r.HandleFunc("/users/{id}", users.Update()).Methods("PUT")
