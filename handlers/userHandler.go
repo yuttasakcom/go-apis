@@ -12,6 +12,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func init() {
+	fmt.Println("UsersHandler")
+}
+
 // User struct
 type User struct {
 	ID        string    `json:"id"`
