@@ -11,7 +11,9 @@ import (
 func Router() http.Handler {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/users", handlers.UsersHandler())
+	users := handlers.UsersHandler{}
+	r.HandleFunc("/users", users.All()).Methods("GET")
+	r.HandleFunc("/users/{id}", users.GetByID()).Methods("GET")
 
 	return r
 }
