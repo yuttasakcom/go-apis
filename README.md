@@ -51,7 +51,7 @@ func Router() http.Handler {
 	r.Handle("/users", middleware.Chain(
 		middleware.LoggingMiddleware,
 		middleware.AuthMiddleware("token"),
-		middleware.AllowRolesMiddleware("admin", "staff"),
+		// middleware.AllowRolesMiddleware("admin", "staff"),
 	)(http.HandlerFunc(handlers.UserAll))).Methods("GET")
 	r.HandleFunc("/users/{id}", handlers.UserID).Methods("GET")
 	r.HandleFunc("/users", handlers.UserCreate).Methods("POST")
