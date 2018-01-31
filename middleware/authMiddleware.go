@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 )
 
@@ -9,7 +8,9 @@ import (
 func AuthMiddleware(token string) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log.Println("token:", token)
+
+			// Todo auth validate
+
 			next.ServeHTTP(w, r)
 		})
 	}

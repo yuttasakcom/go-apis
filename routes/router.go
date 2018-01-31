@@ -3,31 +3,30 @@ package routes
 import (
 	"net/http"
 
-	"github.com/yuttasakcom/go-apis/middleware"
-
 	"github.com/gorilla/mux"
 	"github.com/yuttasakcom/go-apis/handlers"
+	"github.com/yuttasakcom/go-apis/middleware"
 )
 
-// Router handler
+// Router http.Handler
 func Router() http.Handler {
+
+	// Gorilla mux
 	r := mux.NewRouter()
 
-	auth := handlers.AuthHandler{}
-	r.HandleFunc("/login", auth.Login()).Methods("POST")
+	// Auth handler
+	r.HandleFunc("/login", handlers.AuthLogin).Methods("POST")
 
-	users := handlers.UsersHandler{}
-
+	// Users handler
 	r.Handle("/users", middleware.Chain(
 		middleware.LoggingMiddleware,
-		middleware.AuthMiddleware("1sdffassfd23ksaf"), // send token
+		middleware.AuthMiddleware("token"),
 		middleware.AllowRolesMiddleware("admin", "staff"),
-	)(http.HandlerFunc(users.All()))).Methods("GET")
-
-	r.HandleFunc("/users/{id}", users.GetByID()).Methods("GET")
-	r.HandleFunc("/users", users.Create()).Methods("POST")
-	r.HandleFunc("/users/{id}", users.Update()).Methods("PUT")
-	r.HandleFunc("/users/{id}", users.Delete()).Methods("DELETE")
+	)(http.HandlerFunc(handlers.UserAll))).Methods("GET")
+	r.HandleFunc("/users/{id}", handlers.UserID).Methods("GET")
+	r.HandleFunc("/users", handlers.UserCreate).Methods("POST")
+	r.HandleFunc("/users/{id}", handlers.UserUpdate).Methods("PUT")
+	r.HandleFunc("/users/{id}", handlers.UserDelete).Methods("DELETE")
 
 	return r
 }
