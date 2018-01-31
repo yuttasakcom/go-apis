@@ -86,3 +86,21 @@ func (UsersHandler) Update() func(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+// Delete handler
+func (UsersHandler) Delete() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf8")
+
+		params := mux.Vars(r)
+
+		for i, user := range users {
+			if user.ID == params["id"] {
+				users = append(users[:i], users[i+1:]...)
+				break
+			}
+		}
+
+		json.NewEncoder(w).Encode(users)
+	}
+}
