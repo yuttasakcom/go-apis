@@ -21,7 +21,5 @@ func Router() http.Handler {
 	r.HandleFunc("/users/{id}", users.Update()).Methods("PUT")
 	r.HandleFunc("/users/{id}", users.Delete()).Methods("DELETE")
 
-	r.Use(loggingMiddleware)
-
 	return r
 }
