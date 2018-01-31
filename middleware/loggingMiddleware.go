@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// LoggingMiddleware middleware
+// LoggingMiddleware http.Handler
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.RequestURI)

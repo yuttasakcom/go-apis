@@ -20,6 +20,8 @@ func Router() http.Handler {
 
 	r.Handle("/users", middleware.Chain(
 		middleware.LoggingMiddleware,
+		middleware.AuthMiddleware("1sdffassfd23ksaf"), // send token
+		middleware.AllowRolesMiddleware("admin", "staff"),
 	)(http.HandlerFunc(users.All()))).Methods("GET")
 
 	r.HandleFunc("/users/{id}", users.GetByID()).Methods("GET")
