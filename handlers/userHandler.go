@@ -16,6 +16,7 @@ type User struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 var users []User
@@ -45,7 +46,7 @@ func (UsersHandler) GetByID() func(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		json.NewEncoder(w).Encode(users)
+		json.NewEncoder(w).Encode(&User{})
 	}
 }
 
@@ -61,5 +62,27 @@ func (UsersHandler) Create() func(w http.ResponseWriter, r *http.Request) {
 		users = append(users, user)
 
 		json.NewEncoder(w).Encode(users)
+	}
+}
+
+// Update handler
+func (UsersHandler) Update() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf8")
+
+		params := mux.Vars(r)
+
+		for i, user := range users {
+			if user.ID == params["id"] {
+				users = append(users[:i], users[i+1:]...)
+				var user User
+				_ = json.NewDecoder(r.Body).Decode(&user)
+				user.ID = params["id"]
+				user.UpdatedAt = time.Now()
+				users = append(users, user)
+				json.NewEncoder(w).Encode(user)
+				return
+			}
+		}
 	}
 }
