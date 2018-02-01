@@ -14,7 +14,6 @@ import (
 
 func main() {
 
-	// Events Listenter
 	go events.ClearLastRequestsIPs()
 	go events.ClearBlockedIPs()
 
