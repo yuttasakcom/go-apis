@@ -8,10 +8,15 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/yuttasakcom/go-apis/events"
 	"github.com/yuttasakcom/go-apis/routes"
 )
 
 func main() {
+
+	// Events Listenter
+	go events.ClearLastRequestsIPs()
+	go events.ClearBlockedIPs()
 
 	port := os.Getenv("PORT")
 	if port == "" {

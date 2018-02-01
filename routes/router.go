@@ -31,7 +31,7 @@ func Router() http.Handler {
 	r.HandleFunc("/health", handlers.Health).Methods("GET")
 
 	// Global middleware
-	r.Use(middleware.RateLimit)
+	r.Use(middleware.RateLimit) // Todo: change to the Redis
 	r.Use(middleware.Logging)
 
 	return r
