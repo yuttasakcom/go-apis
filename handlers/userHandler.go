@@ -24,7 +24,7 @@ type User struct {
 var users []User
 
 // UserAll handler
-func UserAll(w http.ResponseWriter, r *http.Request) {
+func UserAll(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf8")
 	json.NewEncoder(w).Encode(users)
 }
