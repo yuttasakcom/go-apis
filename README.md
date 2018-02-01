@@ -2,9 +2,15 @@
 
 * [Main](#main)
 * [Router](#router)
-* [Chain Middleware](#chain-middleware)
-* [Auth Middleware](#auth-middleware)
-* [Users Handler](#users-handler)
+* Middleware
+  * [Chain Middleware](#chain-middleware)
+  * [Loggin Middleware](#loggin-middleware)
+  * [Auth Middleware](#auth-middleware)
+  * [Allow Roles Middleware](#allow-roles-middleware)
+* Handlers
+  * [Health Check Handler](#health-check-handler)
+  * [Users Handler](#users-handler)
+  * [Auth Handler](#auth-handler)
 
 ## Main
 
@@ -96,12 +102,32 @@ func Chain(hs ...Middleware) Middleware {
 }
 ```
 
+## Logging Middleware
+
+```go
+package middleware
+
+import (
+	"log"
+	"net/http"
+)
+
+// LoggingMiddleware http.Handler
+func LoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.RequestURI, "LoggingMiddleware")
+		next.ServeHTTP(w, r)
+	})
+}
+```
+
 ## Auth Middleware
 
 ```go
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -111,10 +137,63 @@ func AuthMiddleware(token string) Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 			// Todo auth validate
+			fmt.Println("AuthMiddleware")
 
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+```
+
+## Allow Roles Middleware
+
+```go
+package middleware
+
+import (
+	"net/http"
+)
+
+// AllowRolesMiddleware middleware
+func AllowRolesMiddleware(roles ...string) Middleware {
+	allow := make(map[string]struct{})
+
+	for _, role := range roles {
+		allow[role] = struct{}{}
+	}
+
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			reqRole := r.Header.Get("Role")
+			if _, ok := allow[reqRole]; !ok {
+				http.Error(w, "Forbidden", http.StatusForbidden)
+				return
+			}
+			h.ServeHTTP(w, r)
+		})
+	}
+}
+```
+
+## Health Handler
+
+```go
+package handlers
+
+import (
+	"io"
+	"net/http"
+)
+
+// HealthCheckHandler handler
+func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
+	// A very simple health check.
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	// In the future we could report back on the status of our DB, or our cache
+	// (e.g. Redis) by performing a simple PING, and include them in the response.
+	io.WriteString(w, `{"alive": true}`)
 }
 ```
 
@@ -147,14 +226,14 @@ type User struct {
 var users []User
 
 // UserAll handler
-func UserAll(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf8")
+func UserAll(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(users)
 }
 
 // UserID handler
 func UserID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	params := mux.Vars(r)
 
@@ -170,7 +249,7 @@ func UserID(w http.ResponseWriter, r *http.Request) {
 
 // UserCreate handler
 func UserCreate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var user User
 	_ = json.NewDecoder(r.Body).Decode(&user)
@@ -193,7 +272,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 
 // UserUpdate handler
 func UserUpdate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	params := mux.Vars(r)
 
@@ -213,7 +292,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 
 // UserDelete handler
 func UserDelete(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	params := mux.Vars(r)
 
@@ -225,5 +304,36 @@ func UserDelete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(users)
+}
+```
+
+## Auth Handler
+
+```go
+package handlers
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
+// AuthLogin handler
+func AuthLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf8")
+
+	var user User
+	_ = json.NewDecoder(r.Body).Decode(&user)
+
+	for _, u := range users {
+		if u.Email == user.Email {
+			err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(user.Password))
+			if err == nil {
+				json.NewEncoder(w).Encode(u)
+			}
+
+		}
+	}
 }
 ```
