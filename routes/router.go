@@ -19,7 +19,6 @@ func Router() http.Handler {
 
 	// Users handler
 	r.Handle("/users", middleware.Chain(
-		middleware.LoggingMiddleware,
 		middleware.AuthMiddleware("token"),
 		// middleware.AllowRolesMiddleware("admin", "staff"),
 	)(http.HandlerFunc(handlers.UserAll))).Methods("GET")
@@ -27,6 +26,9 @@ func Router() http.Handler {
 	r.HandleFunc("/users", handlers.UserCreate).Methods("POST")
 	r.HandleFunc("/users/{id}", handlers.UserUpdate).Methods("PUT")
 	r.HandleFunc("/users/{id}", handlers.UserDelete).Methods("DELETE")
+
+	// Global middleware
+	r.Use(middleware.LoggingMiddleware)
 
 	return r
 }
