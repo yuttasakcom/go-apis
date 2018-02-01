@@ -1,5 +1,7 @@
 # go-apis
 
+[![Build Status](https://travis-ci.org/yuttasakcom/go-apis.svg?branch=master)](https://travis-ci.org/yuttasakcom/go-apis)
+
 * [Main](https://github.com/yuttasakcom/go-apis/blob/master/main.go)
 * [Router](https://github.com/yuttasakcom/go-apis/blob/master/routes/router.go)
 * Middleware
