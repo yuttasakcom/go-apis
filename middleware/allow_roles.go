@@ -4,8 +4,8 @@ import (
 	"net/http"
 )
 
-// AllowRolesMiddleware middleware
-func AllowRolesMiddleware(roles ...string) Middleware {
+// AllowRoles Middleware
+func AllowRoles(roles ...string) Middleware {
 	allow := make(map[string]struct{})
 
 	for _, role := range roles {

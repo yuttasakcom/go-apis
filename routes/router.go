@@ -19,8 +19,8 @@ func Router() http.Handler {
 
 	// Users handler
 	r.Handle("/users", middleware.Chain(
-		middleware.AuthMiddleware("token"),
-		// middleware.AllowRolesMiddleware("admin", "staff"),
+		middleware.Auth("token"),
+		// middleware.AllowRoles("admin", "staff"),
 	)(http.HandlerFunc(handlers.UserAll))).Methods("GET")
 	r.HandleFunc("/users/{id}", handlers.UserID).Methods("GET")
 	r.HandleFunc("/users", handlers.UserCreate).Methods("POST")
@@ -28,10 +28,10 @@ func Router() http.Handler {
 	r.HandleFunc("/users/{id}", handlers.UserDelete).Methods("DELETE")
 
 	// HealthCheck handler
-	r.HandleFunc("/health", handlers.HealthCheckHandler).Methods("GET")
+	r.HandleFunc("/health", handlers.Health).Methods("GET")
 
 	// Global middleware
-	r.Use(middleware.LoggingMiddleware)
+	r.Use(middleware.Logging)
 
 	return r
 }

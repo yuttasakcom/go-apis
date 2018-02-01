@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// HealthCheckHandler handler
-func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
+// Health handler
+func Health(w http.ResponseWriter, _ *http.Request) {
 	// A very simple health check.
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
