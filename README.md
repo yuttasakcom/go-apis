@@ -175,7 +175,7 @@ func AllowRolesMiddleware(roles ...string) Middleware {
 }
 ```
 
-## Health Handler
+## Health Check Handler
 
 ```go
 package handlers
