@@ -4,7 +4,7 @@
 * [Router](#router)
 * Middleware
   * [Chain Middleware](#chain-middleware)
-  * [Loggin Middleware](#loggin-middleware)
+  * [Logging Middleware](#logging-middleware)
   * [Auth Middleware](#auth-middleware)
   * [Allow Roles Middleware](#allow-roles-middleware)
 * Handlers
