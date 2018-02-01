@@ -31,6 +31,7 @@ func Router() http.Handler {
 	r.HandleFunc("/health", handlers.Health).Methods("GET")
 
 	// Global middleware
+	r.Use(middleware.RateLimit)
 	r.Use(middleware.Logging)
 
 	return r

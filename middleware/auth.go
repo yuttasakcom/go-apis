@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -11,7 +11,7 @@ func Auth(token string) Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 			// Todo auth validate
-			fmt.Println("AuthMiddleware")
+			log.Println("Auth Middleware")
 
 			next.ServeHTTP(w, r)
 		})
