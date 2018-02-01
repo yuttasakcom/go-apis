@@ -27,6 +27,9 @@ func Router() http.Handler {
 	r.HandleFunc("/users/{id}", handlers.UserUpdate).Methods("PUT")
 	r.HandleFunc("/users/{id}", handlers.UserDelete).Methods("DELETE")
 
+	// HealthCheck handler
+	r.HandleFunc("/health", handlers.HealthCheckHandler).Methods("GET")
+
 	// Global middleware
 	r.Use(middleware.LoggingMiddleware)
 
