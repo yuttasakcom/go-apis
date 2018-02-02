@@ -1,13 +1,12 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
 
 // LIMIT request
-const LIMIT = 2
+const LIMIT = 60
 
 // LastRequestsIPs []string
 var LastRequestsIPs []string
@@ -40,7 +39,6 @@ func RateLimit(next http.Handler) http.Handler {
 		ipAddr := strings.Split(r.RemoteAddr, ":")[0]
 
 		if existsBlockedIP(ipAddr) {
-			fmt.Printf("BlockedIPs: %v\n", BlockedIPs)
 			http.Error(w, "block ip", http.StatusTooManyRequests)
 			return
 		}
@@ -67,8 +65,6 @@ func RateLimit(next http.Handler) http.Handler {
 			http.DefaultServeMux.ServeHTTP(w, r)
 			return
 		}
-
-		fmt.Printf("LastRequestsIPs: %v\n", LastRequestsIPs)
 
 		next.ServeHTTP(w, r)
 	})

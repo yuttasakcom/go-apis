@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/yuttasakcom/go-apis/response"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,18 +31,17 @@ func UserAll(w http.ResponseWriter, _ *http.Request) {
 
 // UserID handler
 func UserID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	params := mux.Vars(r)
 
 	for _, user := range users {
 		if user.ID == params["id"] {
-			json.NewEncoder(w).Encode(user)
+			response.ShowOne(w, user, http.StatusOK)
 			return
 		}
 	}
 
-	json.NewEncoder(w).Encode(&User{})
+	response.ShowOne(w, &User{}, http.StatusOK)
 }
 
 // UserCreate handler
@@ -62,10 +61,16 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 
 	user.Password = string(hpwd)
 	user.CreatedAt = time.Now()
-	fmt.Println(user)
 	users = append(users, user)
 
-	json.NewEncoder(w).Encode(users)
+	for _, u := range users {
+		if u.ID == user.ID {
+			response.ShowOne(w, user, http.StatusOK)
+			return
+		}
+	}
+
+	return
 }
 
 // UserUpdate handler
@@ -82,7 +87,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 			user.ID = params["id"]
 			user.UpdatedAt = time.Now()
 			users = append(users, user)
-			json.NewEncoder(w).Encode(user)
+			response.ShowOne(w, user, http.StatusOK)
 			return
 		}
 	}
