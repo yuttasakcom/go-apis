@@ -7,8 +7,8 @@ import (
 
 var pretty = true
 
-// ShowOne single data
-func ShowOne(w http.ResponseWriter, val interface{}, code ...int) {
+// JSON response with optional status code.
+func JSON(w http.ResponseWriter, val interface{}, code ...int) {
 	var b []byte
 	var err error
 
@@ -35,4 +35,9 @@ func ShowOne(w http.ResponseWriter, val interface{}, code ...int) {
 	}
 
 	w.Write(b)
+}
+
+// Error responds with a generic status code response.
+func Error(w http.ResponseWriter, code int) {
+	http.Error(w, http.StatusText(code), code)
 }

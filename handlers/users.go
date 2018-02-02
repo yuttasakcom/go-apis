@@ -26,7 +26,13 @@ var users []User
 // UserAll handler
 func UserAll(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(users)
+
+	if len(users) == 0 {
+		response.JSON(w, make([]string, 0), http.StatusOK)
+		return
+	}
+
+	response.JSON(w, users, http.StatusOK)
 }
 
 // UserID handler
@@ -36,12 +42,12 @@ func UserID(w http.ResponseWriter, r *http.Request) {
 
 	for _, user := range users {
 		if user.ID == params["id"] {
-			response.ShowOne(w, user, http.StatusOK)
+			response.JSON(w, user, http.StatusOK)
 			return
 		}
 	}
 
-	response.ShowOne(w, &User{}, http.StatusOK)
+	response.Error(w, http.StatusNotFound)
 }
 
 // UserCreate handler
@@ -65,12 +71,12 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 
 	for _, u := range users {
 		if u.ID == user.ID {
-			response.ShowOne(w, user, http.StatusOK)
+			response.JSON(w, user, http.StatusOK)
 			return
 		}
 	}
 
-	return
+	response.JSON(w, map[string]string{"Error": "User created fail"}, http.StatusInternalServerError)
 }
 
 // UserUpdate handler
@@ -87,7 +93,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 			user.ID = params["id"]
 			user.UpdatedAt = time.Now()
 			users = append(users, user)
-			response.ShowOne(w, user, http.StatusOK)
+			response.JSON(w, user, http.StatusOK)
 			return
 		}
 	}
@@ -106,5 +112,5 @@ func UserDelete(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	json.NewEncoder(w).Encode(users)
+	response.JSON(w, map[string]string{"message": "success"}, http.StatusOK)
 }
