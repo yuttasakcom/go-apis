@@ -1,17 +1,16 @@
 package models
 
 import (
-	"math/rand"
-	"strconv"
 	"time"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/yuttasakcom/go-apis/database"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // User model
 type User struct {
-	ID        string
+	ID        uuid.UUID
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 	CreatedAt time.Time
@@ -22,7 +21,7 @@ type User struct {
 func (u *User) Create() {
 	db := database.ConnectDB(database.Mysql{})
 
-	u.ID = strconv.Itoa(rand.Intn(10000000))
+	u.ID = uuid.Must(uuid.NewV4())
 
 	hpwd, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 
