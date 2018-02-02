@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 
 services:
 
@@ -19,4 +19,18 @@ services:
       - /data/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
+    restart: always
+
+  postgres:
+    image: postgres:10.1
+    env_file:
+      - .env
+    volumes:
+      - "/data/postgresql:/var/lib/postgresql"
+    restart: always
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
     restart: always
