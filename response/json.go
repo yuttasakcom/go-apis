@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+var pretty = true
+
 // ShowOne single data
 func ShowOne(w http.ResponseWriter, val interface{}, code ...int) {
 	var b []byte
@@ -15,7 +17,7 @@ func ShowOne(w http.ResponseWriter, val interface{}, code ...int) {
 	res["code"] = code[0]
 	res["data"] = val
 
-	if Pretty {
+	if pretty {
 		b, err = json.MarshalIndent(res, "", "  ")
 	} else {
 		b, err = json.Marshal(res)
