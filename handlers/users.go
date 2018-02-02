@@ -25,8 +25,6 @@ var users []User
 
 // UserAll handler
 func UserAll(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
 	if len(users) == 0 {
 		response.JSON(w, make([]string, 0), http.StatusOK)
 		return
@@ -52,8 +50,6 @@ func UserID(w http.ResponseWriter, r *http.Request) {
 
 // UserCreate handler
 func UserCreate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
 	var user User
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
@@ -81,8 +77,6 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 
 // UserUpdate handler
 func UserUpdate(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
 	params := mux.Vars(r)
 
 	for i, user := range users {
@@ -101,8 +95,6 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 
 // UserDelete handler
 func UserDelete(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
 	params := mux.Vars(r)
 
 	for i, user := range users {
