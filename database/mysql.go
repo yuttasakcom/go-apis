@@ -12,7 +12,7 @@ type Mysql struct{}
 
 // Connect mysql
 func (d Mysql) Connect() *gorm.DB {
-	db, err := gorm.Open("mysql", "root:secret@/golang?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open("mysql", "root:secret@tcp(mysql:3306)/golang?charset=utf8&parseTime=True&loc=Local")
 
 	if err != nil {
 		log.Fatal("Could not connect, error ", err.Error())
